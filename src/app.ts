@@ -1,0 +1,102 @@
+import { input, select, number } from "@inquirer/prompts";
+import { bissec, mil, newtonRaphson, regulaFalsi, secante } from "./metodos.js";
+
+const mathF = await input({ message: "Insira a função" });
+const prec = await number({
+    message: "Insira a precisão desejada",
+    step: "any",
+});
+const maxIt = await number({ message: "Insira o número max de iterações" });
+
+const entradaBissec = async () => {
+    const a = await number({
+        message: "Insira o limite inferior",
+        step: "any",
+    });
+    const b = await number({
+        message: "Insira o limite superior",
+        step: "any",
+    });
+
+    return bissec(
+        mathF,
+        a as number,
+        b as number,
+        prec as number,
+        maxIt as number
+    );
+};
+
+const entradaMIL = async () => {
+    const strFi = await input({ message: "Insira a função fi" });
+    const x0 = await number({ message: "Insira x0", step: "any" });
+
+    return mil(mathF, strFi, x0 as number, prec as number, maxIt as number);
+};
+
+const entradaSecante = async () => {
+    const x0 = await number({
+        message: "Insira x0",
+        step: "any",
+    });
+    const x1 = await number({
+        message: "Insira x1",
+        step: "any",
+    });
+
+    return secante(
+        mathF,
+        x0 as number,
+        x1 as number,
+        prec as number,
+        maxIt as number
+    );
+};
+
+const entradaRegulaFalsi = async () => {
+    const x0 = await number({
+        message: "Insira x0",
+        step: "any",
+    });
+    const x1 = await number({
+        message: "Insira x1",
+        step: "any",
+    });
+
+    return regulaFalsi(
+        mathF,
+        x0 as number,
+        x1 as number,
+        prec as number,
+        maxIt as number
+    );
+};
+
+const entradaNewton = async () => {
+    const strDerivada = await input({ message: "Insira a derivada da função" });
+    const x0 = await number({ message: "Insira x0", step: "any" });
+
+    return newtonRaphson(
+        mathF,
+        strDerivada,
+        x0 as number,
+        prec as number,
+        maxIt as number
+    );
+};
+
+while (true) {
+    const metodoSelecionado = await select({
+        message: "Qual método você deseja utilizar?",
+        choices: [
+            { value: entradaBissec, name: "Bisseção" },
+            { value: entradaMIL, name: "MIL" },
+            { value: entradaNewton, name: "Newton" },
+            { value: entradaSecante, name: "Secante" },
+            { value: entradaRegulaFalsi, name: "Regula Falsi" },
+        ],
+    });
+
+    const result = await metodoSelecionado();
+    console.log(result);
+}
