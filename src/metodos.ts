@@ -15,7 +15,12 @@ export const bissec = (
     let fa = func(strFunc, a);
     let fb = func(strFunc, b);
 
-    if (fa * fb >= 0) {
+    if (fa === null || fb === null) {
+        console.error("Erro ao calcular valor da função");
+        return null;
+    }
+
+    if (fa * fb > 0) {
         console.error(
             "Os valores iniciais não cercam a raiz (f(a) e f(b) têm o mesmo sinal)."
         );
@@ -28,6 +33,11 @@ export const bissec = (
     while (Math.abs(b - a) > prec && it < maxIt) {
         c = (a + b) / 2;
         const fc = func(strFunc, c);
+
+        if (fc === null) {
+            console.error("Erro ao calcular valor da função");
+            return null;
+        }
 
         if (fa * fc < 0) {
             b = c; // A raiz está entre a e c
@@ -57,15 +67,29 @@ export const mil = (
 ): Result | null => {
     let it = 0;
 
-    while (Math.abs(func(strFunc, x)) > prec && it < maxIts) {
-        x = func(strFi, x);
+    while (it < maxIts) {
+        const fx = func(strFunc, x);
+        if (fx === null) {
+            console.error("Erro ao calcular valor da função.");
+            return null;
+        }
+
+        if (Math.abs(fx) <= prec) {
+            return { x, its: it + 1 };
+        }
+
+        const nextX = func(strFi, x);
+        if (nextX === null) {
+            console.error("Erro ao calcular o X da próxima iteração.");
+            return null;
+        }
+
+        x = nextX;
         it++;
     }
 
-    return {
-        its: it,
-        x: x,
-    };
+    console.error("O método de MIL não convergiu.");
+    return null;
 };
 
 export const secante = (
@@ -77,6 +101,12 @@ export const secante = (
 ): Result | null => {
     let f0 = func(strFunc, x0);
     let f1 = func(strFunc, x1);
+
+    if (f0 === null || f1 === null) {
+        console.error("Erro ao calcular valor da função nos pontos iniciais.");
+        return null;
+    }
+
     let it = 0;
 
     while (Math.abs(f1) > prec && it < maxIt) {
@@ -91,7 +121,12 @@ export const secante = (
         x0 = x1;
         f0 = f1;
         x1 = x2;
+
         f1 = func(strFunc, x1);
+        if (f1 === null) {
+            console.error("Erro ao calcular valor da função.");
+            return null;
+        }
 
         it++;
     }
@@ -113,15 +148,29 @@ export const regulaFalsi = (
 ): Result | null => {
     let f0 = func(strFunc, x0);
     let f1 = func(strFunc, x1);
+
+    if (f0 === null || f1 === null) {
+        console.error("Erro ao calcular valor da função nos pontos iniciais.");
+        return null;
+    }
+
     let it = 0;
 
-    if (f0 * f1 >= 0) {
+    if (f0 * f1 > 0) {
+        console.error(
+            "Os valores iniciais não cercam a raiz (f(a) e f(b) têm o mesmo sinal)."
+        );
         return null; // Raiz não cercada
     }
 
     while (Math.abs(x1 - x0) > prec && it < maxIt) {
         const x2 = x1 - (f1 * (x1 - x0)) / (f1 - f0);
         const f2 = func(strFunc, x2);
+
+        if (f2 === null) {
+            console.error("Erro ao calcular valor da função.");
+            return null;
+        }
 
         it++;
 
@@ -154,6 +203,12 @@ export const newtonRaphson = (
 ): Result | null => {
     let f0 = func(strFunc, x0);
     let df0 = func(strDerivada, x0);
+
+    if (f0 === null || df0 === null) {
+        console.error("Erro ao calcular valor da função ou sua derivada.");
+        return null;
+    }
+
     let it = 0;
 
     while (Math.abs(f0) > prec && it < maxIt) {
@@ -165,6 +220,11 @@ export const newtonRaphson = (
         x0 = x0 - f0 / df0;
         f0 = func(strFunc, x0);
         df0 = func(strDerivada, x0);
+
+        if (f0 === null || df0 === null) {
+            console.error("Erro ao calcular valor da função ou sua derivada.");
+            return null;
+        }
 
         it++;
     }
