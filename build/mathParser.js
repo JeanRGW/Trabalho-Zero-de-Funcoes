@@ -22,7 +22,6 @@ export const parseFunction = (mathF, variables) => {
             !Number.isFinite(resultUnparsed)) {
             return null;
         }
-        console.log("Retorno válido: " + resultUnparsed + "; Função: " + mathF);
         return Number(resultUnparsed);
     }
     catch (e) {

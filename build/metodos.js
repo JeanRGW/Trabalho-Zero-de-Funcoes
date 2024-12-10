@@ -30,7 +30,7 @@ export const bissec = (strFunc, a, b, prec, maxIt) => {
         it++;
     }
     if (Math.abs(b - a) <= prec) {
-        return { x: c, its: it, y: func(strFunc, c) };
+        return { x: c, its: it };
     }
     else {
         console.error("O método da Bisseção não convergiu.");

@@ -1,13 +1,5 @@
 import { input, select, number } from "@inquirer/prompts";
 import { bissec, mil, newtonRaphson, regulaFalsi, secante } from "./metodos.js";
-import { simpleParseFunction } from "./mathParser.js";
-const e = Math.E;
-const x = 1.5209886671497657;
-const result = e ** -(x ** 2) - Math.cos(x);
-const expression = "e^-(x**2)-cos(x)";
-const result2 = simpleParseFunction(expression, x);
-console.log(result);
-console.log(result2);
 const mathF = await input({ message: "Insira a função" });
 const prec = await number({
     message: "Insira a precisão desejada",
