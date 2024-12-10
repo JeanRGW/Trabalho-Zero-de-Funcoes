@@ -1,13 +1,16 @@
 export const parseFunction = (mathF, variables) => {
+    mathF = mathF.replaceAll(/-(\w+|\([^()]+\))\^(\d+|\([^()]+\))/g, "-($1^$2)");
     const replaces = [
         ["e", Math.E.toString()],
         ["^", "**"],
         ["cos", "Math.cos"],
         ["sen", "Math.sin"],
-        ["tg", "Math.tan"],
+        ["sqrt", "Math.sqrt"],
+        ["cbrt", "Math.cbrt"],
+        ["tg", "Math.tan"]
     ];
     for (const [symbol, replacement] of replaces) {
-        mathF = mathF.replace(symbol, replacement);
+        mathF = mathF.replaceAll(symbol, replacement);
     }
     for (const variable of variables) {
         mathF = mathF.replace(new RegExp(`\\b${variable.symbol}\\b`, "g"), `(${variable.value})`);
@@ -16,13 +19,15 @@ export const parseFunction = (mathF, variables) => {
         const resultUnparsed = eval(mathF);
         if (typeof resultUnparsed !== "number" ||
             Number.isNaN(resultUnparsed) ||
-            resultUnparsed == Infinity) {
+            !Number.isFinite(resultUnparsed)) {
             return null;
         }
+        console.log("Retorno válido: " + resultUnparsed + "; Função: " + mathF);
         return Number(resultUnparsed);
     }
-    catch {
-        console.log("Error");
+    catch (e) {
+        console.log("Error: " + e);
+        console.log(mathF);
         return null;
     }
 };

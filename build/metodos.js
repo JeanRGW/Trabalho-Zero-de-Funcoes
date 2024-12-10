@@ -30,7 +30,7 @@ export const bissec = (strFunc, a, b, prec, maxIt) => {
         it++;
     }
     if (Math.abs(b - a) <= prec) {
-        return { x: c, its: it };
+        return { x: c, its: it, y: func(strFunc, c) };
     }
     else {
         console.error("O método da Bisseção não convergiu.");
@@ -100,7 +100,8 @@ export const regulaFalsi = (strFunc, x0, x1, prec, maxIt) => {
         return null;
     }
     let it = 0;
-    if (f0 * f1 >= 0) {
+    if (f0 * f1 > 0) {
+        console.error("Os valores iniciais não cercam a raiz (f(a) e f(b) têm o mesmo sinal).");
         return null;
     }
     while (Math.abs(x1 - x0) > prec && it < maxIt) {

@@ -2,16 +2,20 @@ export const parseFunction = (
     mathF: string,
     variables: { symbol: string; value: number }[]
 ): number | null => {
+    mathF = mathF.replaceAll(/-(\w+|\([^()]+\))\^(\d+|\([^()]+\))/g, "-($1^$2)"); // Encapsular operações onde ^ é precedido por -
+
     const replaces = [
         ["e", Math.E.toString()],
         ["^", "**"],
         ["cos", "Math.cos"],
         ["sen", "Math.sin"],
-        ["tg", "Math.tan"],
+        ["sqrt", "Math.sqrt"],
+        ["cbrt", "Math.cbrt"],
+        ["tg", "Math.tan"]
     ];
 
     for (const [symbol, replacement] of replaces) {
-        mathF = mathF.replace(symbol, replacement);
+        mathF = mathF.replaceAll(symbol, replacement);
     }
 
     for (const variable of variables) {
@@ -27,14 +31,15 @@ export const parseFunction = (
         if (
             typeof resultUnparsed !== "number" ||
             Number.isNaN(resultUnparsed) ||
-            resultUnparsed == Infinity
+            !Number.isFinite(resultUnparsed)
         ) {
             return null;
         }
 
         return Number(resultUnparsed); // Garante retorno com precisão
-    } catch {
-        console.log("Error");
+    } catch (e) {
+        console.log("Error: " + e);
+        console.log(mathF);
         return null;
     }
 };
